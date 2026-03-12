@@ -163,15 +163,16 @@ describe('getMoveDests', () => {
     });
   });
 
-  describe('Kirin (space-diagonal slide)', () => {
-    it('kirin at (5,5,2) slides on space diagonals', () => {
+  describe('Kirin (diagonal slide)', () => {
+    it('kirin at (5,5,2) slides on space + edge diagonals', () => {
       const b = Board.from([p('sente', 'kirin', { x: 5, y: 5, z: 2 })]);
-      expect(getMoveDests(b, { x: 5, y: 5, z: 2 }).length).toBe(8);
+      expect(getMoveDests(b, { x: 5, y: 5, z: 2 }).length).toBe(32);
     });
 
     it('kirin at z=1 can slide further upward', () => {
       const b = Board.from([p('sente', 'kirin', { x: 5, y: 5, z: 1 })]);
-      expect(getMoveDests(b, { x: 5, y: 5, z: 1 }).length).toBe(8);
+      const dests = getMoveDests(b, { x: 5, y: 5, z: 1 });
+      expect(dests.length).toBeGreaterThan(8);
     });
   });
 

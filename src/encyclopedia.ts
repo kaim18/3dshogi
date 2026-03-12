@@ -37,8 +37,8 @@ const DESCS: Partial<Record<PieceType, string>> = {
   p_lance: '金と同じ動き',
   pawn: '前方1マス',
   p_pawn: '金と同じ動き',
-  kirin: '空間対角8方向にスライド',
-  p_kirin: '空間対角8方向スライド＋直交6方向1マス',
+  kirin: '空間対角＋辺対角20方向にスライド',
+  p_kirin: '空間対角＋辺対角スライド＋直交6方向1マス',
   houou: '2+1のL字ジャンプ（24方向）',
   p_houou: '2+1ジャンプ＋直交6方向1マス',
 };

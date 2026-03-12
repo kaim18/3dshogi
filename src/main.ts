@@ -15,6 +15,7 @@ const aiStrategy = createMinimaxAI(2);
 // ===== State =====
 let gameState: GameState = createInitialState();
 let uiState: UIState = initialUIState;
+let stateHistory: GameState[] = [];
 
 // ===== Three.js setup =====
 const app = document.getElementById('app')!;
@@ -287,9 +288,13 @@ function finishMoveAnimation() {
     scene.remove(moveAnim.obj);
   }
   moveAnim = null;
+  const prev = gameState;
   const result = transition(uiState, { kind: 'animationEnd' }, gameState);
   uiState = result.uiState;
-  if (result.newGameState) gameState = result.newGameState;
+  if (result.newGameState) {
+    stateHistory.push(prev);
+    gameState = result.newGameState;
+  }
   render();
   scheduleAITurn();
 }
@@ -370,9 +375,13 @@ function renderHand(el: HTMLElement, hand: ViewData['senteHand']) {
 let prevViewMode: ViewMode = uiState.viewMode;
 
 function dispatch(event: UIEvent) {
+  const prev = gameState;
   const result = transition(uiState, event, gameState);
   uiState = result.uiState;
-  if (result.newGameState) gameState = result.newGameState;
+  if (result.newGameState) {
+    stateHistory.push(prev);
+    gameState = result.newGameState;
+  }
 
   // View mode change → layout animation
   if (uiState.viewMode.kind !== prevViewMode.kind ||
@@ -464,11 +473,23 @@ document.getElementById('btn-no-promote')!.addEventListener('click', () =>
 document.getElementById('btn-restart')!.addEventListener('click', () => {
   gameState = createInitialState();
   uiState = initialUIState;
+  stateHistory = [];
   prevViewMode = uiState.viewMode;
   // Reset layer positions to cube
   for (let i = 0; i < layerGroups.length; i++) {
     layerGroups[i].position.set(0, (i - 1) * LAYER_GAP, 0);
   }
+  render();
+});
+
+// ===== Undo (待った) =====
+document.getElementById('btn-undo')!.addEventListener('click', () => {
+  // Undo 2 moves (player + AI) back to player's turn
+  if (stateHistory.length < 2 || gameState.turn !== 'sente') return;
+  if (uiState.phase.kind !== 'idle') return;
+  stateHistory.pop(); // AI's move
+  gameState = stateHistory.pop()!; // player's move
+  uiState = { ...uiState, phase: { kind: 'idle' } };
   render();
 });
 

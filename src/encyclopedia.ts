@@ -4,6 +4,7 @@ import { Board } from '@core/board';
 import { getMoveDests } from '@core/moves';
 import { PIECE_DEFS, PIECE_NAMES, PROMOTABLE, BOARD_X, BOARD_Y, BOARD_Z } from '@core/constants';
 import { PieceType } from '@core/types';
+import { getLang, onLangChange } from './i18n';
 
 const CELL = 1.0;
 const GAP = 4.0;
@@ -43,7 +44,6 @@ const DESCS: Partial<Record<PieceType, { ja: string; en: string }>> = {
   p_houou: { ja: 'L字ジャンプ＋直交6方向＋空間対角8方向1マス', en: 'L-jump + 6 orthogonal + 8 space-diagonal steps' },
 };
 
-let currentLang: 'ja' | 'en' = 'ja';
 
 export function initEncyclopedia() {
   const panel = document.getElementById('encyclopedia-panel')!;
@@ -191,7 +191,7 @@ export function initEncyclopedia() {
     }
 
     titleEl.textContent = `${PIECE_NAMES[type]}（${type}）`;
-    descEl.textContent = DESCS[type]?.[currentLang] ?? '';
+    descEl.textContent = DESCS[type]?.[getLang()] ?? '';
   }
 
   // Build piece list buttons
@@ -200,7 +200,7 @@ export function initEncyclopedia() {
   const buttons: { btn: HTMLButtonElement; entry: typeof ENTRIES[0] }[] = [];
   for (const entry of ENTRIES) {
     const btn = document.createElement('button');
-    btn.textContent = entry.label[currentLang];
+    btn.textContent = entry.label[getLang()];
     btn.addEventListener('click', () => {
       activeBtn?.classList.remove('active');
       btn.classList.add('active');
@@ -213,20 +213,11 @@ export function initEncyclopedia() {
   }
 
   function refreshLang() {
-    for (const { btn, entry } of buttons) btn.textContent = entry.label[currentLang];
+    for (const { btn, entry } of buttons) btn.textContent = entry.label[getLang()];
     if (activeType) showPiece(activeType);
   }
 
-  // Language toggle
-  const langBtn = document.createElement('button');
-  langBtn.textContent = '🌐 EN';
-  langBtn.style.cssText = 'position:absolute;top:8px;right:40px;z-index:10;font-size:14px;padding:4px 8px;';
-  panel.appendChild(langBtn);
-  langBtn.addEventListener('click', () => {
-    currentLang = currentLang === 'ja' ? 'en' : 'ja';
-    langBtn.textContent = currentLang === 'ja' ? '🌐 EN' : '🌐 JA';
-    refreshLang();
-  });
+  onLangChange(refreshLang);
 
   // Open/close
   let animId = 0;

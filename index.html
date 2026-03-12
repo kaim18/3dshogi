@@ -154,6 +154,7 @@
       <div class="winner" id="winner-text"></div>
       <button id="btn-restart">最初から</button>
     </div>
+    <button id="btn-lang">🌐 EN</button>
     <button id="btn-help">?</button>
     <button id="btn-encyclopedia">📖</button>
     <div id="encyclopedia-panel">
@@ -169,38 +170,7 @@
     </div>
     <div id="help-panel">
       <button class="close-help" id="close-help">×</button>
-      <div class="help-inner">
-        <h2>操作方法</h2>
-        <table>
-          <tr><td>駒を選択</td><td>盤面の自分の駒をクリック</td></tr>
-          <tr><td>駒を移動</td><td>ハイライトされたマスをクリック</td></tr>
-          <tr><td>持ち駒を打つ</td><td>下の持ち駒バーをクリック → 盤面をクリック</td></tr>
-          <tr><td>選択解除</td><td>同じ駒をもう一度クリック / 空きマスをクリック</td></tr>
-          <tr><td>カメラ回転</td><td>ドラッグ</td></tr>
-          <tr><td>ズーム</td><td>スクロール</td></tr>
-        </table>
-        <table>
-          <tr><td><kbd>Cube</kbd></td><td>3層を立体表示</td></tr>
-          <tr><td><kbd>Flat</kbd></td><td>3層を横に展開</td></tr>
-          <tr><td><kbd>Z1</kbd> <kbd>Z2</kbd> <kbd>Z3</kbd></td><td>指定した層だけ表示</td></tr>
-        </table>
-
-        <h2>盤面</h2>
-        <p>9×9×3 の立体盤面（243マス）。Z1が下層、Z2が中層、Z3が上層。<br>
-        駒は3層すべてを使って移動できます。</p>
-
-        <h2>駒の動き</h2>
-        <p>📖 図鑑ボタンで各駒の動きを3Dで確認できます</p>
-
-        <h2>特殊ルール</h2>
-        <table>
-          <tr><td>成り</td><td>敵陣（相手から見て手前3段 × 全層）に入る/出る/内で動くとき成れる</td></tr>
-          <tr><td>持ち駒</td><td>取った駒は持ち駒に。Z2（中層）の空きマスにのみ打てる</td></tr>
-          <tr><td>二歩</td><td>Z2の同じ筋に自分の歩が2枚置けない</td></tr>
-          <tr><td>打ち歩詰め</td><td>歩を打って即詰みは禁止</td></tr>
-          <tr><td>行き所のない駒</td><td>歩・香・桂は進めなくなる位置に打てない</td></tr>
-        </table>
-      </div>
+      <div class="help-inner" id="help-inner"></div>
     </div>
   </div>
   <script type="module" src="/src/main.ts"></script>

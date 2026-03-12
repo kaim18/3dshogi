@@ -9,6 +9,7 @@ import { PIECE_NAMES, BOARD_X, BOARD_Y, BOARD_Z } from '@core/constants';
 import { randomAI } from './ai/random';
 import { createMinimaxAI } from './ai/minimax';
 import { initEncyclopedia } from './encyclopedia';
+import { getLang, setLang, onLangChange } from './i18n';
 
 const aiStrategy = createMinimaxAI(2);
 
@@ -341,14 +342,18 @@ const gameoverDialog = document.getElementById('gameover-dialog')!;
 const winnerText = document.getElementById('winner-text')!;
 
 function updateOverlay(vd: ViewData) {
-  turnEl.textContent = vd.turn === 'sente' ? 'あなたの番' : 'CPUの番';
+  turnEl.textContent = vd.turn === 'sente'
+    ? (getLang() === 'ja' ? 'あなたの番' : 'Your turn')
+    : (getLang() === 'ja' ? 'CPUの番' : 'CPU thinking…');
   renderHand(senteHandEl, vd.senteHand);
   renderHand(goteHandEl, vd.goteHand);
   promoteDialog.style.display = vd.phase === 'promoteConfirm' ? 'block' : 'none';
 
   if (vd.phase === 'gameOver') {
     const phase = uiState.phase as { kind: 'gameOver'; winner: string };
-    winnerText.textContent = phase.winner === 'sente' ? '☗先手の勝ち！' : '☖後手の勝ち！';
+    winnerText.textContent = phase.winner === 'sente'
+      ? (getLang() === 'ja' ? '☗先手の勝ち！' : '☗ You win!')
+      : (getLang() === 'ja' ? '☖後手の勝ち！' : '☖ CPU wins!');
     gameoverDialog.style.display = 'block';
     turnEl.textContent = '';
   } else {
@@ -494,12 +499,72 @@ document.getElementById('btn-undo')!.addEventListener('click', () => {
 });
 
 // ===== Help panel =====
+const HELP: Record<string, { ja: string; en: string }[][]> = {
+  controls: [
+    [{ ja: '駒を選択', en: 'Select piece' }, { ja: '盤面の自分の駒をクリック', en: 'Click your piece on the board' }],
+    [{ ja: '駒を移動', en: 'Move piece' }, { ja: 'ハイライトされたマスをクリック', en: 'Click a highlighted square' }],
+    [{ ja: '持ち駒を打つ', en: 'Drop piece' }, { ja: '下の持ち駒バーをクリック → 盤面をクリック', en: 'Click hand bar → click board' }],
+    [{ ja: '選択解除', en: 'Deselect' }, { ja: '同じ駒をもう一度クリック / 空きマスをクリック', en: 'Click same piece again / click empty square' }],
+    [{ ja: 'カメラ回転', en: 'Rotate' }, { ja: 'ドラッグ', en: 'Drag' }],
+    [{ ja: 'ズーム', en: 'Zoom' }, { ja: 'スクロール', en: 'Scroll' }],
+  ],
+  views: [
+    [{ ja: 'Cube', en: 'Cube' }, { ja: '3層を立体表示', en: '3 layers stacked' }],
+    [{ ja: 'Flat', en: 'Flat' }, { ja: '3層を横に展開', en: '3 layers side by side' }],
+    [{ ja: 'Z1 Z2 Z3', en: 'Z1 Z2 Z3' }, { ja: '指定した層だけ表示', en: 'Show single layer' }],
+  ],
+  rules: [
+    [{ ja: '成り', en: 'Promotion' }, { ja: '敵陣（相手から見て手前3段 × 全層）に入る/出る/内で動くとき成れる', en: 'When entering/leaving/moving within enemy zone (3 rows × all layers)' }],
+    [{ ja: '持ち駒', en: 'Drops' }, { ja: '取った駒は持ち駒に。Z2（中層）の空きマスにのみ打てる', en: 'Captured pieces go to hand. Drop only on Z2 (middle layer) empty squares' }],
+    [{ ja: '二歩', en: 'Double Pawn' }, { ja: 'Z2の同じ筋に自分の歩が2枚置けない', en: 'Cannot have 2 own pawns in same column on Z2' }],
+    [{ ja: '打ち歩詰め', en: 'Drop Pawn Mate' }, { ja: '歩を打って即詰みは禁止', en: 'Cannot checkmate by dropping a pawn' }],
+    [{ ja: '行き所のない駒', en: 'Dead pieces' }, { ja: '歩・香・桂は進めなくなる位置に打てない', en: 'Pawn/Lance/Knight cannot be dropped where they have no moves' }],
+  ],
+};
+
 const helpPanel = document.getElementById('help-panel')!;
+const helpInner = document.getElementById('help-inner')!;
+
+function renderHelp() {
+  const l = getLang();
+  const t = (rows: { ja: string; en: string }[][]) =>
+    '<table>' + rows.map(r => `<tr>${r.map(c => `<td>${c[l]}</td>`).join('')}</tr>`).join('') + '</table>';
+  const board = l === 'ja'
+    ? '9×9×3 の立体盤面（243マス）。Z1が下層、Z2が中層、Z3が上層。<br>駒は3層すべてを使って移動できます。'
+    : '9×9×3 board (243 squares). Z1=bottom, Z2=middle, Z3=top.<br>Pieces move across all 3 layers.';
+  const pieceRef = l === 'ja' ? '📖 図鑑ボタンで各駒の動きを3Dで確認できます' : '📖 Use the encyclopedia button to view piece movements in 3D';
+  helpInner.innerHTML =
+    `<h2>${l === 'ja' ? '操作方法' : 'Controls'}</h2>${t(HELP.controls)}${t(HELP.views)}` +
+    `<h2>${l === 'ja' ? '盤面' : 'Board'}</h2><p>${board}</p>` +
+    `<h2>${l === 'ja' ? '駒の動き' : 'Pieces'}</h2><p>${pieceRef}</p>` +
+    `<h2>${l === 'ja' ? '特殊ルール' : 'Special Rules'}</h2>${t(HELP.rules)}`;
+}
+renderHelp();
+
 document.getElementById('btn-help')!.addEventListener('click', () => {
   helpPanel.style.display = helpPanel.style.display === 'block' ? 'none' : 'block';
 });
 document.getElementById('close-help')!.addEventListener('click', () => {
   helpPanel.style.display = 'none';
+});
+
+// ===== Language toggle =====
+const langBtn = document.getElementById('btn-lang')!;
+langBtn.addEventListener('click', () => {
+  setLang(getLang() === 'ja' ? 'en' : 'ja');
+});
+onLangChange(() => {
+  langBtn.textContent = getLang() === 'ja' ? '🌐 EN' : '🌐 JA';
+  renderHelp();
+  // Re-render UI text
+  const vd = computeViewData(gameState, uiState);
+  updateOverlay(vd);
+  // Update buttons
+  const l = getLang();
+  document.getElementById('btn-restart')!.textContent = l === 'ja' ? '最初から' : 'Restart';
+  document.getElementById('btn-undo')!.textContent = l === 'ja' ? '待った' : 'Undo';
+  document.getElementById('btn-promote')!.textContent = l === 'ja' ? '成る' : 'Promote';
+  document.getElementById('btn-no-promote')!.textContent = l === 'ja' ? '不成' : 'Decline';
 });
 
 // ===== Encyclopedia =====

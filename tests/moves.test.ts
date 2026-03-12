@@ -177,9 +177,9 @@ describe('getMoveDests', () => {
   });
 
   describe('Houou (jump)', () => {
-    it('houou at center has 16 reachable destinations', () => {
+    it('houou at center has 25 reachable destinations', () => {
       const b = Board.from([p('sente', 'houou', { x: 5, y: 5, z: 2 })]);
-      expect(getMoveDests(b, { x: 5, y: 5, z: 2 }).length).toBe(16);
+      expect(getMoveDests(b, { x: 5, y: 5, z: 2 }).length).toBe(25);
     });
   });
 

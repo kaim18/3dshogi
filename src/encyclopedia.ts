@@ -39,8 +39,8 @@ const DESCS: Partial<Record<PieceType, string>> = {
   p_pawn: '金と同じ動き',
   kirin: '空間対角＋辺対角20方向にスライド',
   p_kirin: '空間対角＋辺対角スライド＋直交6方向1マス',
-  houou: '2+1のL字ジャンプ（24方向）',
-  p_houou: '2+1ジャンプ＋直交6方向1マス',
+  houou: 'L字ジャンプ＋空間対角8方向＋前方1マス',
+  p_houou: 'L字ジャンプ＋直交6方向＋空間対角8方向1マス',
 };
 
 export function initEncyclopedia() {

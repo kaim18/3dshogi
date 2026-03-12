@@ -64,8 +64,8 @@ export const PIECE_DEFS: Record<PieceType, PieceDef> = {
   p_silver: { move: 'step',  dirs: GOLD_DIRS, forwardSensitive: true },
   p_knight: { move: 'step',  dirs: GOLD_DIRS, forwardSensitive: true },
   p_lance:  { move: 'step',  dirs: GOLD_DIRS, forwardSensitive: true },
-  p_kirin:  { move: 'jump+step', dirs: [], forwardSensitive: false, jumpDirs: HOUOU_DIRS, stepDirs: ORTHOGONAL_6 },
-  p_houou:  { move: 'slide+step', dirs: [], forwardSensitive: false, slideDirs: SPACE_DIAGONAL_8, stepDirs: ORTHOGONAL_6 },
+  p_kirin:  { move: 'slide+step', dirs: [], forwardSensitive: false, slideDirs: SPACE_DIAGONAL_8, stepDirs: ORTHOGONAL_6 },
+  p_houou:  { move: 'jump+step', dirs: [], forwardSensitive: false, jumpDirs: HOUOU_DIRS, stepDirs: ORTHOGONAL_6 },
   p_rook:   { move: 'slide+step', dirs: [], forwardSensitive: false, slideDirs: ORTHOGONAL_6, stepDirs: ALL_26 },
   p_bishop: { move: 'slide+step', dirs: [], forwardSensitive: false, slideDirs: EDGE_DIAGONAL_12, stepDirs: ALL_26 },
 };

@@ -8,6 +8,7 @@ import { UIState, UIEvent, ViewData, ViewMode, CellView } from './ui/types';
 import { PIECE_NAMES, BOARD_X, BOARD_Y, BOARD_Z } from '@core/constants';
 import { randomAI } from './ai/random';
 import { createMinimaxAI } from './ai/minimax';
+import { initEncyclopedia } from './encyclopedia';
 
 const aiStrategy = createMinimaxAI(2);
 
@@ -479,6 +480,9 @@ document.getElementById('btn-help')!.addEventListener('click', () => {
 document.getElementById('close-help')!.addEventListener('click', () => {
   helpPanel.style.display = 'none';
 });
+
+// ===== Encyclopedia =====
+initEncyclopedia();
 
 // ===== View mode visibility =====
 function applyViewMode(mode: ViewMode) {

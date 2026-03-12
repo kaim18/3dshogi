@@ -53,7 +53,7 @@ export function createMinimaxAI(depth: number): AIStrategy {
 
     const maximizing = state.turn === 'sente';
     let bestScore = maximizing ? -Infinity : Infinity;
-    let bestMove = legalMoves[0];
+    let bestMoves: MoveAction[] = [];
 
     for (const move of legalMoves) {
       const score = alphaBeta(
@@ -61,10 +61,12 @@ export function createMinimaxAI(depth: number): AIStrategy {
       );
       if (maximizing ? score > bestScore : score < bestScore) {
         bestScore = score;
-        bestMove = move;
+        bestMoves = [move];
+      } else if (score === bestScore) {
+        bestMoves.push(move);
       }
     }
 
-    return bestMove;
+    return bestMoves[Math.floor(Math.random() * bestMoves.length)];
   };
 }

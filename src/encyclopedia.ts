@@ -9,39 +9,41 @@ const CELL = 1.0;
 const GAP = 4.0;
 
 // Piece entries: base pieces + their promoted forms grouped together
-const ENTRIES: { type: PieceType; label: string }[] = [
-  { type: 'king', label: '王将' },
-  { type: 'rook', label: '飛車' }, { type: 'p_rook', label: '　→ 龍王' },
-  { type: 'bishop', label: '角行' }, { type: 'p_bishop', label: '　→ 龍馬' },
-  { type: 'gold', label: '金将' },
-  { type: 'silver', label: '銀将' }, { type: 'p_silver', label: '　→ 成銀' },
-  { type: 'knight', label: '桂馬' }, { type: 'p_knight', label: '　→ 成桂' },
-  { type: 'lance', label: '香車' }, { type: 'p_lance', label: '　→ 成香' },
-  { type: 'pawn', label: '歩兵' }, { type: 'p_pawn', label: '　→ と金' },
-  { type: 'kirin', label: '麒麟' }, { type: 'p_kirin', label: '　→ 成麒' },
-  { type: 'houou', label: '鳳凰' }, { type: 'p_houou', label: '　→ 成鳳' },
+const ENTRIES: { type: PieceType; label: { ja: string; en: string } }[] = [
+  { type: 'king', label: { ja: '王将', en: 'King' } },
+  { type: 'rook', label: { ja: '飛車', en: 'Rook' } }, { type: 'p_rook', label: { ja: '　→ 龍王', en: '　→ Dragon' } },
+  { type: 'bishop', label: { ja: '角行', en: 'Bishop' } }, { type: 'p_bishop', label: { ja: '　→ 龍馬', en: '　→ Horse' } },
+  { type: 'gold', label: { ja: '金将', en: 'Gold' } },
+  { type: 'silver', label: { ja: '銀将', en: 'Silver' } }, { type: 'p_silver', label: { ja: '　→ 成銀', en: '　→ +Silver' } },
+  { type: 'knight', label: { ja: '桂馬', en: 'Knight' } }, { type: 'p_knight', label: { ja: '　→ 成桂', en: '　→ +Knight' } },
+  { type: 'lance', label: { ja: '香車', en: 'Lance' } }, { type: 'p_lance', label: { ja: '　→ 成香', en: '　→ +Lance' } },
+  { type: 'pawn', label: { ja: '歩兵', en: 'Pawn' } }, { type: 'p_pawn', label: { ja: '　→ と金', en: '　→ +Pawn' } },
+  { type: 'kirin', label: { ja: '麒麟', en: 'Kirin' } }, { type: 'p_kirin', label: { ja: '　→ 成麒', en: '　→ +Kirin' } },
+  { type: 'houou', label: { ja: '鳳凰', en: 'Phoenix' } }, { type: 'p_houou', label: { ja: '　→ 成鳳', en: '　→ +Phoenix' } },
 ];
 
-const DESCS: Partial<Record<PieceType, string>> = {
-  king: '全26方向に1マス',
-  rook: '直交6方向にスライド',
-  p_rook: '直交6方向スライド＋全26方向1マス',
-  bishop: '辺対角12方向にスライド',
-  p_bishop: '辺対角12方向スライド＋全26方向1マス',
-  gold: '直交6方向＋前方斜め4方向に1マス',
-  silver: '前方9方向＋後方平面斜め2方向',
-  p_silver: '金と同じ動き',
-  knight: '前方2＋横1のジャンプ（4方向）',
-  p_knight: '金と同じ動き',
-  lance: '前方にスライド',
-  p_lance: '金と同じ動き',
-  pawn: '前方1マス',
-  p_pawn: '金と同じ動き',
-  kirin: '空間対角＋辺対角20方向にスライド',
-  p_kirin: '空間対角＋辺対角スライド＋直交6方向1マス',
-  houou: 'L字ジャンプ＋空間対角8方向＋前方1マス',
-  p_houou: 'L字ジャンプ＋直交6方向＋空間対角8方向1マス',
+const DESCS: Partial<Record<PieceType, { ja: string; en: string }>> = {
+  king: { ja: '全26方向に1マス', en: '1 step in all 26 directions' },
+  rook: { ja: '直交6方向にスライド', en: 'Slides in 6 orthogonal directions' },
+  p_rook: { ja: '直交6方向スライド＋全26方向1マス', en: 'Orthogonal slide + 1 step in all 26 dirs' },
+  bishop: { ja: '辺対角12方向にスライド', en: 'Slides in 12 edge-diagonal directions' },
+  p_bishop: { ja: '辺対角12方向スライド＋全26方向1マス', en: 'Edge-diagonal slide + 1 step in all 26 dirs' },
+  gold: { ja: '直交6方向＋前方斜め4方向に1マス', en: '1 step in 6 orthogonal + 4 forward diagonal dirs' },
+  silver: { ja: '前方9方向＋後方平面斜め2方向', en: '9 forward dirs + 2 backward plane diagonals' },
+  p_silver: { ja: '金と同じ動き', en: 'Same as Gold' },
+  knight: { ja: '前方2＋横1のジャンプ（4方向）', en: 'Jump forward 2 + sideways 1 (4 dirs)' },
+  p_knight: { ja: '金と同じ動き', en: 'Same as Gold' },
+  lance: { ja: '前方にスライド', en: 'Slides forward' },
+  p_lance: { ja: '金と同じ動き', en: 'Same as Gold' },
+  pawn: { ja: '前方1マス', en: '1 step forward' },
+  p_pawn: { ja: '金と同じ動き', en: 'Same as Gold' },
+  kirin: { ja: '空間対角＋辺対角20方向にスライド', en: 'Slides in 20 dirs (8 space + 12 edge diagonal)' },
+  p_kirin: { ja: '空間対角＋辺対角スライド＋直交6方向1マス', en: 'Diagonal slide + 1 step in 6 orthogonal dirs' },
+  houou: { ja: 'L字ジャンプ＋空間対角8方向＋前方1マス', en: 'L-jump + 8 space-diagonal steps + 1 forward' },
+  p_houou: { ja: 'L字ジャンプ＋直交6方向＋空間対角8方向1マス', en: 'L-jump + 6 orthogonal + 8 space-diagonal steps' },
 };
+
+let currentLang: 'ja' | 'en' = 'ja';
 
 export function initEncyclopedia() {
   const panel = document.getElementById('encyclopedia-panel')!;
@@ -189,22 +191,42 @@ export function initEncyclopedia() {
     }
 
     titleEl.textContent = `${PIECE_NAMES[type]}（${type}）`;
-    descEl.textContent = DESCS[type] ?? '';
+    descEl.textContent = DESCS[type]?.[currentLang] ?? '';
   }
 
   // Build piece list buttons
   let activeBtn: HTMLButtonElement | null = null;
+  let activeType: PieceType | null = null;
+  const buttons: { btn: HTMLButtonElement; entry: typeof ENTRIES[0] }[] = [];
   for (const entry of ENTRIES) {
     const btn = document.createElement('button');
-    btn.textContent = entry.label;
+    btn.textContent = entry.label[currentLang];
     btn.addEventListener('click', () => {
       activeBtn?.classList.remove('active');
       btn.classList.add('active');
       activeBtn = btn;
+      activeType = entry.type;
       showPiece(entry.type);
     });
     listEl.appendChild(btn);
+    buttons.push({ btn, entry });
   }
+
+  function refreshLang() {
+    for (const { btn, entry } of buttons) btn.textContent = entry.label[currentLang];
+    if (activeType) showPiece(activeType);
+  }
+
+  // Language toggle
+  const langBtn = document.createElement('button');
+  langBtn.textContent = '🌐 EN';
+  langBtn.style.cssText = 'position:absolute;top:8px;right:40px;z-index:10;font-size:14px;padding:4px 8px;';
+  panel.appendChild(langBtn);
+  langBtn.addEventListener('click', () => {
+    currentLang = currentLang === 'ja' ? 'en' : 'ja';
+    langBtn.textContent = currentLang === 'ja' ? '🌐 EN' : '🌐 JA';
+    refreshLang();
+  });
 
   // Open/close
   let animId = 0;

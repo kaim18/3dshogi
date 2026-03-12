@@ -29,7 +29,7 @@ const DESCS: Partial<Record<PieceType, string>> = {
   bishop: '辺対角12方向にスライド',
   p_bishop: '辺対角12方向スライド＋全26方向1マス',
   gold: '直交6方向＋前方斜め4方向に1マス',
-  silver: '前方1マス＋辺対角12方向に1マス',
+  silver: '前方9方向＋後方平面斜め2方向',
   p_silver: '金と同じ動き',
   knight: '前方2＋横1のジャンプ（4方向）',
   p_knight: '金と同じ動き',

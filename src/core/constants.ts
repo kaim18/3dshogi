@@ -54,7 +54,7 @@ export const PIECE_DEFS: Record<PieceType, PieceDef> = {
   rook:     { move: 'slide', dirs: ORTHOGONAL_6, forwardSensitive: false },
   bishop:   { move: 'slide', dirs: EDGE_DIAGONAL_12, forwardSensitive: false },
   gold:     { move: 'step',  dirs: GOLD_DIRS, forwardSensitive: true },
-  silver:   { move: 'step',  dirs: [[0,1,0], ...EDGE_DIAGONAL_12], forwardSensitive: true },
+  silver:   { move: 'step',  dirs: [[0,1,0],[1,1,0],[-1,1,0],[0,1,1],[0,1,-1],[1,1,1],[1,1,-1],[-1,1,1],[-1,1,-1],[1,-1,0],[-1,-1,0]], forwardSensitive: true },
   knight:   { move: 'jump',  dirs: KNIGHT_DIRS, forwardSensitive: true },
   lance:    { move: 'slide', dirs: [[0,1,0]], forwardSensitive: true },
   pawn:     { move: 'step',  dirs: [[0,1,0]], forwardSensitive: true },

@@ -157,9 +157,9 @@ describe('getMoveDests', () => {
   });
 
   describe('Silver', () => {
-    it('sente silver has 13 moves from center z=2', () => {
+    it('sente silver has 11 moves from center z=2', () => {
       const b = Board.from([p('sente', 'silver', { x: 5, y: 5, z: 2 })]);
-      expect(getMoveDests(b, { x: 5, y: 5, z: 2 }).length).toBe(13);
+      expect(getMoveDests(b, { x: 5, y: 5, z: 2 }).length).toBe(11);
     });
   });
 
